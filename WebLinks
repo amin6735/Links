@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD AL AMIN | Ultimate Dashboard 2026</title>
+    <style>
+        :root {
+            --bg-grad: linear-gradient(135deg, #2d0000 0%, #000000 50%, #001a00 100%);
+            --main-btn: linear-gradient(90deg, #1a2a6c, #b21f1f, #004400);
+            --sub-btn: linear-gradient(45deg, #FFD700, #FF4500);
+            --gold: #FFD700;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body { background: var(--bg-grad); background-attachment: fixed; color: #fff; padding: 10px; min-height: 100vh; text-align: center; }
+
+        #rainCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+
+        header {
+            position: relative; z-index: 10; background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px); border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1);
+        }
+        #clock { font-size: 1.5rem; font-weight: bold; color: var(--gold); }
+        
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; font-size: 0.85rem; }
+        .info-box { background: rgba(0,0,0,0.3); padding: 8px; border-radius: 10px; border: 1px solid rgba(255,215,0,0.2); }
+        .prayer-time { color: var(--gold); font-weight: bold; }
+
+        .container { position: relative; z-index: 10; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; }
+        .card { background: rgba(0, 0, 0, 0.7); border-radius: 15px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+        .main-btn { width: 100%; padding: 18px; background: var(--main-btn); border: none; color: white; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
+
+        .content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; background: rgba(0, 0, 0, 0.6); }
+        .link-grid { padding: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        .sub-btn {
+            background: var(--sub-btn); color: #000; text-decoration: none; padding: 10px; border-radius: 8px;
+            font-size: 0.85rem; font-weight: 800; display: flex; align-items: center; justify-content: center; height: 45px;
+            transition: 0.2s;
+        }
+        .sub-btn:hover { opacity: 0.9; transform: scale(1.02); }
+
+        .tool-box { padding: 20px; }
+        .calc-input { width: 95%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: none; background: #111; color: var(--gold); text-align: center; }
+        
+        .mode-container { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; }
+        .mode-btn { padding: 8px 15px; cursor: pointer; border: none; border-radius: 5px; background: #333; color: #fff; }
+        .mode-btn.active { background: var(--gold); color: #000; font-weight: bold; }
+
+        .result-box { background: rgba(255, 215, 0, 0.1); padding: 15px; border-radius: 10px; border: 1px solid var(--gold); margin-top: 15px; }
+        #scheduleTable { width: 100%; margin-top: 15px; border-collapse: collapse; font-size: 0.7rem; }
+        #scheduleTable th, #scheduleTable td { border: 1px solid rgba(255,215,0,0.3); padding: 5px; text-align: center; }
+
+        footer { margin-top: 40px; padding: 30px; background: #000; border-top: 2px solid var(--gold); }
+        .social-btn { text-decoration: none; color: #000; background: var(--gold); padding: 10px 20px; border-radius: 50px; font-weight: bold; display: inline-block; margin: 5px; }
+    </style>
+</head>
+<body>
+
+    <canvas id="rainCanvas"></canvas>
+
+    <header>
+        <div id="clock">00:00:00</div>
+        <div style="font-size: 0.8rem; margin: 5px 0;">📅 <span id="date"></span> | 📍 <span id="userLocation">লোড হচ্ছে...</span></div>
+        
+        <div class="info-grid">
+            <div class="info-box">☁️ আবহাওয়া: <span id="weather">...</span></div>
+            <div class="info-box">🕌 পরবর্তী নামাজ: <span id="nextPrayer" class="prayer-time">...</span></div>
+        </div>
+        <div id="prayerSchedule" style="font-size: 0.75rem; margin-top: 10px; display: flex; justify-content: space-around; opacity: 0.8; flex-wrap: wrap; gap: 5px;">
+            <span>ফজর: <b id="fajr">-</b></span>
+            <span>জোহর: <b id="dhuhr">-</b></span>
+            <span>আসর: <b id="asr">-</b></span>
+            <span>মাগরিব: <b id="maghrib">-</b></span>
+            <span>ইশা: <b id="isha">-</b></span>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <button class="main-btn" onclick="toggle(this)">১. ধর্ম ও ইসলাম</button>
+            <div class="content"><div class="link-grid">
+                <a href="https://quran.com" target="_blank" class="sub-btn">Quran.com</a>
+                <a href="https://sunnah.com" target="_blank" class="sub-btn">Sunnah.com</a>
+                <a href="https://hadithbd.com" target="_blank" class="sub-btn">Hadith BD</a>
+                <a href="https://quranmazid.com" target="_blank" class="sub-btn">Quran Mazid</a>
+                <a href="https://islamqa.info/bn" target="_blank" class="sub-btn">IslamQA</a>
+                <a href="https://alkawsar.com" target="_blank" class="sub-btn">Al-Kawsar</a>
+                <a href="https://vfatwa.com" target="_blank" class="sub-btn">V-Fatwa</a>
+                <a href="https://islamicfoundation.gov.bd" target="_blank" class="sub-btn">Foundation</a>
+                <a href="https://muslimandquran.com" target="_blank" class="sub-btn">Prayer Times</a>
+                <a href="https://quraneralo.com" target="_blank" class="sub-btn">Quraner Alo</a>
+            </div></div>
+        </div>
+
+        <div class="card">
+            <button class="main-btn" onclick="toggle(this)">২. সোশ্যাল মিডিয়া</button>
+            <div class="content"><div class="link-grid">
+                <a href="https://www.facebook.com" target="_blank" class="sub-btn">Facebook</a>
+                <a href="https://www.youtube.com" target="_blank" class="sub-btn">YouTube</a>
+                <a href="https://web.whatsapp.com" target="_blank" class="sub-btn">WhatsApp</a>
+                <a href="https://www.messenger.com" target="_blank" class="sub-btn">Messenger</a>
+                <a href="https://www.instagram.com" target="_blank" class="sub-btn">Instagram</a>
+                <a href="https://x.com" target="_blank" class="sub-btn">X / Twitter</a>
+                <a href="https://www.linkedin.com" target="_blank" class="sub-btn">LinkedIn</a>
+                <a href="https://www.tiktok.com" target="_blank" class="sub-btn">TikTok</a>
+                <a href="https://t.me/mdalamin" target="_blank" class="sub-btn">Telegram</a>
+                <a href="https://www.reddit.com" target="_blank" class="sub-btn">Reddit</a>
+            </div></div>
+        </div>
+
+        <div class="card">
+            <button class="main-btn" onclick="toggle(this)">৩. এআই টুলস</button>
+            <div class="content"><div class="link-grid">
+                <a href="https://chatgpt.com" target="_blank" class="sub-btn">ChatGPT</a>
+                <a href="https://gemini.google.com" target="_blank" class="sub-btn">Gemini AI</a>
+                <a href="https://claude.ai" target="_blank" class="sub-btn">Claude AI</a>
+                <a href="https://www.perplexity.ai" target="_blank" class="sub-btn">Perplexity</a>
+                <a href="https://poe.com" target="_blank" class="sub-btn">Poe AI</a>
+                <a href="https://leonardo.ai" target="_blank" class="sub-btn">Leonardo</a>
+                <a href="https://www.canva.com" target="_blank" class="sub-btn">Canva</a>
+                <a href="https://www.midjourney.com" target="_blank" class="sub-btn">Midjourney</a>
+                <a href="https://firefly.adobe.com" target="_blank" class="sub-btn">Firefly</a>
+                <a href="https://remaker.ai" target="_blank" class="sub-btn">Remaker</a>
+            </div></div>
+        </div>
+
+        <div class="card">
+            <button class="main-btn" onclick="toggle(this)">৪. ফ্রি এআই কোর্স</button>
+            <div class="content"><div class="link-grid">
+                <a href="https://grow.google/ai" target="_blank" class="sub-btn">Google AI</a>
+                <a href="https://www.coursera.org" target="_blank" class="sub-btn">Coursera</a>
+                <a href="https://www.edx.org" target="_blank" class="sub-btn">edX</a>
+                <a href="https://www.deeplearning.ai" target="_blank" class="sub-btn">DeepLearning</a>
+                <a href="https://alison.com" target="_blank" class="sub-btn">Alison</a>
+                <a href="https://cognitiveclass.ai" target="_blank" class="sub-btn">IBM AI</a>
+                <a href="https://www.khanacademy.org" target="_blank" class="sub-btn">Khan Academy</a>
+                <a href="https://www.freecodecamp.org" target="_blank" class="sub-btn">FreeCodeCamp</a>
+                <a href="https://www.elements-of-ai.com" target="_blank" class="sub-btn">Elements AI</a>
+                <a href="https://www.udacity.com" target="_blank" class="sub-btn">Udacity</a>
+            </div></div>
+        </div>
+
+        <div class="card">
+            <button class="main-btn" onclick="toggle(this)">৫. টেক লার্নিং</button>
+            <div class="content"><div class="link-grid">
+                <a href="https://trickbd.com" target="_blank" class="sub-btn">TrickBD</a>
+                <a href="https://www.w3schools.com" target="_blank" class="sub-btn">W3Schools</a>
+                <a href="https://stackoverflow.com" target="_blank" class="sub-btn">Stack Overflow</a>
+                <a href="https://github.com" target="_blank" class="sub-btn">GitHub</a>
+                <a href="https://medium.com" target="_blank" class="sub-btn">Medium</a>
+                <a href="https://www.geeksforgeeks.org" target="_blank" class="sub-btn">GeeksforGeeks</a>
+                <a href="https://www.xda-developers.com" target="_blank" class="sub-btn">XDA Devs</a>
+                <a href="https://hackernoon.com" target="_blank" class="sub-btn">HackerNoon</a>
+                <a href="https://www.theverge.com" target="_blank" class="sub-btn">The Verge</a>
+                <a href="https://techcrunch.com" target="_blank" class="sub-btn">TechCrunch</a>
+            </div></div>
+        </div>
+
+        <div class="card">
+            <button class="main-btn" onclick="toggle(this)">৬. লাইভ টিভি</button>
+            <div class="content"><div class="link-grid">
+                <a href="https://www.famelack.com" target="_blank" class="sub-btn">Famelack</a>
+                <a href="https://torongoplus.vercel.app" target="_blank" class="sub-btn">Torongo Plus</a>
+                <a href="https://toffeelive.com" target="_blank" class="sub-btn">Toffee</a>
+                <a href="https://www.bioscopelive.com" target="_blank" class="sub-btn">Bioscope</a>
+                <a href="https://www.jagobd.com" target="_blank" class="sub-btn">Jago BD</a>
+                <a href="https://bongobd.com" target="_blank" class="sub-btn">Bongo BD</a>
+                <a href="https://somoynews.tv/live" target="_blank" class="sub-btn">Somoy TV</a>
+                <a href="https://www.rtvonline.com/live" target="_blank" class="sub-btn">RTV Live</a>
+                <a href="https://independent24.tv" target="_blank" class="sub-btn">Independent</a>
+                <a href="https://www.jamuna.tv" target="_blank" class="sub-btn">Jamuna TV</a>
+            </div></div>
+        </div>
+
+        <div class="card">
+            <button class="main-btn" onclick="toggle(this)">৭. লাইভ রেডিও</button>
+            <div class="content"><div class="link-grid">
+                <a href="https://onlineradiobox.com/bd/" target="_blank" class="sub-btn">All Radio</a>
+                <a href="https://radiogarden.com" target="_blank" class="sub-btn">Radio Garden</a>
+                <a href="https://betar.gov.bd" target="_blank" class="sub-btn">BD Betar</a>
+                <a href="https://radiofoorti.fm" target="_blank" class="sub-btn">Foorti</a>
+                <a href="https://dhakafm.com.bd" target="_blank" class="sub-btn">Dhaka FM</a>
+                <a href="https://abcradio.fm" target="_blank" class="sub-btn">ABC Radio</a>
+                <a href="https://radiotodaybd.fm" target="_blank" class="sub-btn">Radio Today</a>
+                <a href="https://tunein.com" target="_blank" class="sub-btn">TuneIn</a>
+                <a href="https://mytuner-radio.com" target="_blank" class="sub-btn">myTuner</a>
+                <a href="https://radio.net" target="_blank" class="sub-btn">Radio.net</a>
+            </div></div>
+        </div>
+
+        <div class="card">
+            <button class="main-btn" onclick="toggle(this)">৮. ইন্টারন্যাশনাল নিউজ</button>
+            <div class="content"><div class="link-grid">
+                <a href="https://www.bbc.com" target="_blank" class="sub-btn">BBC News</a>
+                <a href="https://www.aljazeera.com" target="_blank" class="sub-btn">Al Jazeera</a>
+                <a href="https://www.cnn.com" target="_blank" class="sub-btn">CNN</a>
+                <a href="https://www.reuters.com" target="_blank" class="sub-btn">Reuters</a>
+                <a href="https://www.nytimes.com" target="_blank" class="sub-btn">NY Times</a>
+                <a href="https://www.theguardian.com" target="_blank" class="sub-btn">Guardian</a>
+                <a href="https://www.bloomberg.com" target="_blank" class="sub-btn">Bloomberg</a>
+                <a href="https://www.dw.com" target="_blank" class="sub-btn">DW News</a>
+                <a href="https://apnews.com" target="_blank" class="sub-btn">AP News</a>
+                <a href="https://www.rt.com" target="_blank" class="sub-btn">RT News</a>
+            </div></div>
+        </div>
+
+        <div class="card">
+            <button class="main-btn" onclick="toggle(this)">৯. ব্যাংকিং খবর</button>
+            <div class="content"><div class="link-grid">
+                <a href="https://www.bb.org.bd" target="_blank" class="sub-btn">BD Bank</a>
+                <a href="https://www.tbsnews.net/banking" target="_blank" class="sub-btn">TBS Banking</a>
+                <a href="https://www.prothomalo.com/business" target="_blank" class="sub-btn">Prothom Alo</a>
+                <a href="https://www.thedailystar.net/business" target="_blank" class="sub-btn">Daily Star</a>
+                <a href="https://thefinancialexpress.com.bd" target="_blank" class="sub-btn">Fin. Express</a>
+                <a href="https://www.dhakatribune.com/business" target="_blank" class="sub-btn">Dhaka Tribune</a>
+                <a href="https://www.jugantor.com/economics" target="_blank" class="sub-btn">Jugantor</a>
+                <a href="https://www.ittefaq.com.bd/business" target="_blank" class="sub-btn">Ittefaq</a>
+                <a href="https://bdnews24.com/business" target="_blank" class="sub-btn">BDNews24</a>
+                <a href="https://bonikbarta.net" target="_blank" class="sub-btn">Bonik Barta</a>
+            </div></div>
+        </div>
+
+        <div class="card">
+            <button class="main-btn" onclick="toggle(this)">১০. লোন ক্যালকুলেটর</button>
+            <div class="content"><div class="tool-box">
+                <div class="mode-container">
+                    <button class="mode-btn active" id="mS" onclick="setMode('s')">সিম্পল</button>
+                    <button class="mode-btn" id="mC" onclick="setMode('c')">কম্পাউন্ড</button>
+                </div>
+                <input type="number" id="loanP" class="calc-input" placeholder="মূল টাকা">
+                <input type="number" id="loanR" class="calc-input" placeholder="বার্ষিক সুদ %">
+                <input type="number" id="loanN" class="calc-input" placeholder="সময় (মাস)">
+                <button class="sub-btn" style="width:100%" onclick="updateLoan()">হিসাব ও সিডিউল</button>
+                <div id="loanRes" class="result-box" style="display:none; padding:10px;"></div>
+                <div style="overflow-x:auto"><table id="scheduleTable" style="display:none">
+                    <thead><tr><th>মাস</th><th>কিস্তি</th><th>সুদ</th><th>আসল</th><th>অবশিষ্ট</th></tr></thead>
+                    <tbody id="schedBody"></tbody>
+                </table></div>
+            </div></div>
+        </div>
+
+        <div class="card">
+            <button class="main-btn" onclick="toggle(this)">১১. এইজ ক্যালকুলেটর</button>
+            <div class="content"><div class="tool-box">
+                <input type="date" id="birthD" class="calc-input">
+                <button class="sub-btn" style="width:100%" onclick="updateAge()">বয়স দেখুন</button>
+                <div id="ageRes" class="result-box" style="display:none; padding:10px;"></div>
+            </div></div>
+        </div>
+    </div>
+
+    <footer>
+        <div style="color: var(--gold); font-size: 1.5rem; font-weight: 900;">MD AL AMIN</div>
+        <div style="margin: 15px 0;">
+            <a href="https://www.facebook.com/NBL.ALAMIN" target="_blank" class="social-btn">FACEBOOK</a>
+            <a href="https://wa.me/8801916996735" target="_blank" class="social-btn">WHATSAPP</a>
+            <a href="https://t.me/mdalamin" target="_blank" class="social-btn">TELEGRAM</a>
+        </div>
+        <p style="font-size: 0.6rem; opacity: 0.5;">&copy; 2026 MD AL AMIN | SANTahar</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('rainCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const drops = [];
+        for(let i=0; i<100; i++) drops.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*5+5});
+        function drawRain() {
+            ctx.clearRect(0,0,canvas.width, canvas.height); ctx.strokeStyle = 'rgba(174,194,224,0.1)';
+            drops.forEach(d => {
+                ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x, d.y+15); ctx.stroke();
+                d.y += d.s; if(d.y > canvas.height) d.y = -20;
+            });
+            requestAnimationFrame(drawRain);
+        }
+        drawRain();
+
+        function toggle(btn) {
+            const p = btn.nextElementSibling;
+            document.querySelectorAll('.content').forEach(c => { if(c!==p) c.style.maxHeight = null; });
+            p.style.maxHeight = p.style.maxHeight ? null : "1200px";
+        }
+
+        // অটো লোকেশন ও ডেটা লোড
+        function getAutoLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lon = pos.coords.longitude;
+                    
+                    try {
+                        const geo = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                        const gData = await geo.json();
+                        const place = gData.address.city || gData.address.town || gData.address.village || "সান্তাহার";
+                        document.getElementById('userLocation').innerText = place;
+                    } catch(e) { document.getElementById('userLocation').innerText = "সান্তাহার"; }
+
+                    updateWeather(lat, lon);
+                    updatePrayers(lat, lon);
+                }, () => {
+                    updateWeather(24.78, 88.99);
+                    updatePrayers(24.78, 88.99);
+                });
+            }
+        }
+
+        async function updateWeather(lat, lon) {
+            try {
+                const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+                const data = await res.json();
+                document.getElementById('weather').innerText = `${data.current_weather.temperature}°C`;
+            } catch(e) { document.getElementById('weather').innerText = "N/A"; }
+        }
+
+        async function updatePrayers(lat, lon) {
+            try {
+                // Method 1 = University of Islamic Sciences, Karachi (Hanafi)
+                // School 1 = Hanafi asr timing
+                const res = await fetch(`https://api.aladhan.com/v1/timingsByAddress?address=${lat},${lon}&method=1&school=1`);
+                const data = await res.json();
+                const t = data.data.timings;
+                document.getElementById('fajr').innerText = t.Fajr;
+                document.getElementById('dhuhr').innerText = t.Dhuhr;
+                document.getElementById('asr').innerText = t.Asr;
+                document.getElementById('maghrib').innerText = t.Maghrib;
+                document.getElementById('isha').innerText = t.Isha;
+
+                const now = new Date();
+                const cur = now.getHours() * 60 + now.getMinutes();
+                const pArr = [
+                    {n: 'ফজর', t: t.Fajr}, {n: 'জোহর', t: t.Dhuhr}, 
+                    {n: 'আসর', t: t.Asr}, {n: 'মাগরিব', t: t.Maghrib}, {n: 'ইশা', t: t.Isha}
+                ];
+                let next = pArr[0];
+                for (let p of pArr) {
+                    const [h, m] = p.t.split(':');
+                    if (parseInt(h)*60 + parseInt(m) > cur) { next = p; break; }
+                }
+                document.getElementById('nextPrayer').innerText = `${next.n} (${next.t})`;
+            } catch(e) { console.log("Prayer Data Error"); }
+        }
+
+        let lMode = 's';
+        function setMode(m) {
+            lMode = m;
+            document.getElementById('mS').classList.toggle('active', m==='s');
+            document.getElementById('mC').classList.toggle('active', m==='c');
+        }
+
+        function updateLoan() {
+            const P = parseFloat(document.getElementById('loanP').value);
+            const rateYear = parseFloat(document.getElementById('loanR').value);
+            const N = parseInt(document.getElementById('loanN').value);
+            if(!P || !rateYear || !N) return;
+            const R = rateYear / 1200;
+            let emi, totalInt, balance = P;
+            const res = document.getElementById('loanRes');
+            const table = document.getElementById('scheduleTable');
+            const body = document.getElementById('schedBody');
+            body.innerHTML = "";
+            if(lMode === 's') {
+                totalInt = P * (rateYear / 100) * (N / 12);
+                emi = (P + totalInt) / N;
+            } else {
+                emi = P * R * Math.pow(1+R, N) / (Math.pow(1+R, N)-1);
+                totalInt = (emi * N) - P;
+            }
+            res.style.display = 'block'; table.style.display = 'table';
+            res.innerHTML = `কিস্তি: <b>${emi.toFixed(2)}</b> টাকা | সুদ: ${totalInt.toFixed(0)} টাকা`;
+            for(let i=1; i<=Math.min(N, 12); i++) {
+                let interest = lMode === 'c' ? balance * R : (P * (rateYear/100) / 12);
+                let principal = emi - interest;
+                balance -= principal;
+                body.innerHTML += `<tr><td>${i}</td><td>${emi.toFixed(0)}</td><td>${interest.toFixed(0)}</td><td>${principal.toFixed(0)}</td><td>${Math.max(0, balance).toFixed(0)}</td></tr>`;
+            }
+        }
+
+        function updateAge() {
+            const bInput = document.getElementById('birthD').value;
+            if(!bInput) return;
+            const birth = new Date(bInput);
+            const now = new Date();
+            let y = now.getFullYear() - birth.getFullYear();
+            let m = now.getMonth() - birth.getMonth();
+            let d = now.getDate() - birth.getDate();
+            if (d < 0) { m--; d += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
+            if (m < 0) { y--; m += 12; }
+            const res = document.getElementById('ageRes');
+            res.style.display = 'block';
+            res.innerHTML = `বয়স: <b>${y} বছর, ${m} মাস, ${d} দিন</b>`;
+        }
+
+        setInterval(() => {
+            const n = new Date();
+            document.getElementById('clock').innerText = n.toLocaleTimeString();
+            document.getElementById('date').innerText = n.toLocaleDateString('en-GB');
+        }, 1000);
+
+        getAutoLocation();
+    </script>
+</body>
+</html>
