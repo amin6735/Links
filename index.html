@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আল-আমিন আল্টিমেট ড্যাশবোর্ড ২০২৬</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #020617;
+            --royal-gold: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #0f172a, #020617, #000);
+            color: #f8fafc;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding-bottom: 50px;
+        }
+
+        /* Royal Header Section */
+        .header-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(25px);
+            padding: 25px 15px;
+            border-bottom: 3px solid #bf953f;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+
+        .header-top-row {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 900px;
+            margin: 0 auto;
+            gap: 15px;
+        }
+
+        .live-clock {
+            font-size: 36px;
+            font-weight: 900;
+            background: var(--royal-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .date-info { font-size: 11px; color: #94a3b8; text-align: left; }
+        .prayer-info {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 18px;
+            border-radius: 15px;
+            border: 1px solid #bf953f;
+        }
+
+        .container { width: 95%; max-width: 800px; margin: 30px auto; }
+
+        /* Premium Category Buttons */
+        .category { margin-bottom: 18px; }
+        
+        .cat-btn {
+            width: 100%;
+            padding: 22px 25px;
+            border: none;
+            color: white;
+            font-size: 19px;
+            font-weight: 800;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: 0.4s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        /* Color Variations */
+        .islamic { background: rgba(16, 185, 129, 0.15); border-left: 8px solid #10b981; }
+        .social { background: rgba(59, 130, 246, 0.15); border-left: 8px solid #3b82f6; }
+        .ent { background: rgba(244, 63, 94, 0.15); border-left: 8px solid #f43f5e; }
+        .intl { background: rgba(139, 92, 246, 0.15); border-left: 8px solid #8b5cf6; }
+        .local { background: rgba(220, 38, 38, 0.15); border-left: 8px solid #dc2626; }
+        .edu { background: rgba(245, 158, 11, 0.15); border-left: 8px solid #f59e0b; }
+        .ai-tools { background: rgba(168, 85, 247, 0.15); border-left: 8px solid #a855f7; }
+        .ai-learn { background: rgba(6, 182, 212, 0.15); border-left: 8px solid #06b6d2; }
+
+        .cat-btn:hover { transform: translateY(-5px); filter: brightness(1.2); }
+
+        .panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 5px;
+        }
+
+        .link-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 14px;
+            border-radius: 15px;
+            text-decoration: none;
+            color: #cbd5e1;
+            font-size: 13.5px;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s;
+        }
+        .link-card:hover { background: rgba(255,255,255,0.1); border-color: #bf953f; color: #fff; transform: scale(1.02); }
+        .link-card i { margin-right: 12px; font-size: 16px; width: 20px; text-align: center; }
+
+        footer { text-align: center; padding: 40px; color: #bf953f; font-weight: bold; letter-spacing: 2px; }
+    </style>
+</head>
+<body onclick="playSalam()">
+
+    <div class="header-panel">
+        <div class="header-top-row">
+            <div class="date-info">
+                <div>En: <b>3 May 2026</b></div>
+                <div>Ar: <b>14 Zilkad 47</b></div>
+                <div>Bn: <b>19 Baishakh 33</b></div>
+            </div>
+            <div class="live-clock" id="clock">00:00:00</div>
+            <div class="prayer-info">
+                <div id="p-name" style="font-size: 10px; opacity: 0.7;">নামাজ</div>
+                <div id="p-timer" style="font-size: 16px; font-weight: 800; color: #fcf6ba;">00:00:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="category">
+            <button class="cat-btn islamic" onclick="toggle(this)"><span><i class="fa-solid fa-mosque"></i> ১. আমার ধর্ম ইসলাম</span> <i class="fa-solid fa-chevron-down"></i></button>
+            <div class="panel">
+                <a href="https://quran.com" class="link-card"><i class="fa-solid fa-book-quran"></i> কুরআন মাজিদ</a>
+                <a href="https://sunnah.com" class="link-card"><i class="fa-solid fa-kaaba"></i> হাদিস শরিফ</a>
+                <a href="https://islamqa.info/bn" class="link-card"><i class="fa-solid fa-circle-question"></i> ইসলাম জিজ্ঞাসা</a>
+                <a href="https://assunnahfoundation.org" class="link-card"><i class="fa-solid fa-heart"></i> আস-সুন্নাহ</a>
+                <a href="https://quranmazid.com" class="link-card"><i class="fa-solid fa-star-and-crescent"></i> আল-কুরআন</a>
+                <a href="https://www.hadithbd.com" class="link-card"><i class="fa-solid fa-check-double"></i> হাদিস বিডি</a>
+                <a href="https://alkawsar.com" class="link-card"><i class="fa-solid fa-book-open"></i> মাসিক আল-কাউসার</a>
+                <a href="https://islamicfoundation.gov.bd" class="link-card"><i class="fa-solid fa-building"></i> ইসলামিক ফাউন্ডেশন</a>
+                <a href="https://muslimandquran.com" class="link-card"><i class="fa-solid fa-clock"></i> নামাজের সময়</a>
+                <a href="https://dorustv.com" class="link-card"><i class="fa-solid fa-tv"></i> দুরুস টিভি</a>
+            </div>
+        </div>
+
+        <div class="category">
+            <button class="cat-btn social" onclick="toggle(this)"><span><i class="fa-solid fa-users"></i> ২. সামাজিক মিডিয়া</span> <i class="fa-solid fa-chevron-down"></i></button>
+            <div class="panel">
+                <a href="https://facebook.com" class="link-card"><i class="fa-brands fa-facebook"></i> Facebook</a>
+                <a href="https://youtube.com" class="link-card"><i class="fa-brands fa-youtube"></i> YouTube</a>
+                <a href="https://twitter.com" class="link-card"><i class="fa-brands fa-x-twitter"></i> Twitter / X</a>
+                <a href="https://instagram.com" class="link-card"><i class="fa-brands fa-instagram"></i> Instagram</a>
+                <a href="https://linkedin.com" class="link-card"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+                <a href="https://whatsapp.com" class="link-card"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+                <a href="https://tiktok.com" class="link-card"><i class="fa-brands fa-tiktok"></i> TikTok</a>
+                <a href="https://pinterest.com" class="link-card"><i class="fa-brands fa-pinterest"></i> Pinterest</a>
+                <a href="https://reddit.com" class="link-card"><i class="fa-brands fa-reddit"></i> Reddit</a>
+                <a href="https://telegram.org" class="link-card"><i class="fa-brands fa-telegram"></i> Telegram</a>
+            </div>
+        </div>
+
+        <div class="category">
+            <button class="cat-btn ai-tools" onclick="toggle(this)"><span><i class="fa-solid fa-robot"></i> ৩. পপুলার ও ফ্রি AI টুলস</span> <i class="fa-solid fa-chevron-down"></i></button>
+            <div class="panel">
+                <a href="https://chatgpt.com" class="link-card"><i class="fa-solid fa-comment-dots"></i> ChatGPT</a>
+                <a href="https://gemini.google.com" class="link-card"><i class="fa-solid fa-wand-magic-sparkles"></i> Google Gemini</a>
+                <a href="https://claude.ai" class="link-card"><i class="fa-solid fa-brain"></i> Claude AI</a>
+                <a href="https://leonardo.ai" class="link-card"><i class="fa-solid fa-image"></i> Leonardo Image</a>
+                <a href="https://perplexity.ai" class="link-card"><i class="fa-solid fa-magnifying-glass"></i> Perplexity</a>
+                <a href="https://ideogram.ai" class="link-card"><i class="fa-solid fa-font"></i> Ideogram AI</a>
+                <a href="https://canva.com" class="link-card"><i class="fa-solid fa-palette"></i> Canva Magic Edit</a>
+                <a href="https://gamma.app" class="link-card"><i class="fa-solid fa-file-powerpoint"></i> Gamma (PPT)</a>
+                <a href="https://vocalremover.org" class="link-card"><i class="fa-solid fa-music"></i> Vocal Remover</a>
+                <a href="https://blackbox.ai" class="link-card"><i class="fa-solid fa-code"></i> Blackbox AI</a>
+            </div>
+        </div>
+
+        <div class="category">
+            <button class="cat-btn ai-learn" onclick="toggle(this)"><span><i class="fa-solid fa-graduation-cap"></i> ৪. ফ্রি AI শেখার কোর্স</span> <i class="fa-solid fa-chevron-down"></i></button>
+            <div class="panel">
+                <a href="https://grow.google/ai-essentials/" class="link-card"><i class="fa-brands fa-google"></i> Google AI Course</a>
+                <a href="https://www.deeplearning.ai/short-courses/" class="link-card"><i class="fa-solid fa-microchip"></i> DeepLearning.AI</a>
+                <a href="https://www.coursera.org/learn/ai-for-everyone" class="link-card"><i class="fa-solid fa-chalkboard-user"></i> AI for Everyone</a>
+                <a href="https://www.elementsofai.com/" class="link-card"><i class="fa-solid fa-atom"></i> Elements of AI</a>
+                <a href="https://youtube.com/playlist?list=PL4CU6L9mN2XvXFvL_vNf_X8n0pX9H-eXW" class="link-card"><i class="fa-brands fa-youtube"></i> AI Crash Course</a>
+                <a href="https://huggingface.co/learn" class="link-card"><i class="fa-solid fa-face-smile"></i> Hugging Face Learn</a>
+                <a href="https://cognitiveclass.ai/" class="link-card"><i class="fa-solid fa-laptop-code"></i> IBM AI Learning</a>
+                <a href="https://www.freecodecamp.org/news/tag/ai/" class="link-card"><i class="fa-solid fa-fire"></i> FreeCodeCamp AI</a>
+                <a href="https://microsoft.com/learn" class="link-card"><i class="fa-brands fa-microsoft"></i> MS AI School</a>
+                <a href="https://alison.com/tag/artificial-intelligence" class="link-card"><i class="fa-solid fa-certificate"></i> Alison Free AI</a>
+            </div>
+        </div>
+
+        <div class="category">
+            <button class="cat-btn ent" onclick="toggle(this)"><span><i class="fa-solid fa-play"></i> ৫. বিনোদন</span> <i class="fa-solid fa-chevron-down"></i></button>
+            <div class="panel">
+                <a href="https://torongoplus.vercel.app/" class="link-card"><i class="fa-solid fa-tv"></i> Torongo TV</a>
+                <a href="https://famelack.com" class="link-card"><i class="fa-solid fa-film"></i> Famelack</a>
+                <a href="https://netflix.com" class="link-card"><i class="fa-brands fa-netflix"></i> Netflix</a>
+                <a href="https://spotify.com" class="link-card"><i class="fa-brands fa-spotify"></i> Spotify</a>
+            </div>
+        </div>
+
+        <div class="category">
+            <button class="cat-btn intl" onclick="toggle(this)"><span><i class="fa-solid fa-globe"></i> ৬. আন্তর্জাতিক সাইট</span> <i class="fa-solid fa-chevron-down"></i></button>
+            <div class="panel">
+                <a href="https://bbc.com" class="link-card">BBC News</a>
+                <a href="https://aljazeera.com" class="link-card">Al Jazeera</a>
+                <a href="https://cnn.com" class="link-card">CNN News</a>
+                <a href="https://reuters.com" class="link-card">Reuters</a>
+                <a href="https://theguardian.com" class="link-card">Guardian</a>
+                <a href="https://nytimes.com" class="link-card">NY Times</a>
+                <a href="https://trtworld.com" class="link-card">TRT World</a>
+                <a href="https://bloomberg.com" class="link-card">Bloomberg</a>
+                <a href="https://rt.com" class="link-card">RT News</a>
+                <a href="https://dw.com" class="link-card">DW News</a>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        🔱 আল-আমিন প্রিমিয়াম ড্যাশবোর্ড ২০২৬ 🔱
+    </footer>
+
+    <script>
+        function toggle(btn) {
+            var panel = btn.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+                btn.querySelector("i:last-child").className = "fa-solid fa-chevron-down";
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+                btn.querySelector("i:last-child").className = "fa-solid fa-chevron-up";
+            }
+        }
+
+        const pTimes = [
+            {n: "ফজর", t: "04:15"}, {n: "যোহর", t: "12:15"}, 
+            {n: "আসর", t: "16:40"}, {n: "মাগরিব", t: "18:35"}, {n: "এশা", t: "19:55"}
+        ];
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString('bn-BD', {hour12: false});
+
+            let next = pTimes[0];
+            for (let p of pTimes) {
+                let [h, m] = p.t.split(':');
+                let target = new Date(); target.setHours(h, m, 0);
+                if (target > now) { next = p; break; }
+            }
+
+            document.getElementById('p-name').innerText = next.n;
+            let [th, tm] = next.t.split(':');
+            let tDate = new Date(); tDate.setHours(th, tm, 0);
+            let diff = tDate - now;
+            if (diff < 0) diff += 86400000;
+
+            let hh = Math.floor(diff/3600000);
+            let mm = Math.floor((diff%3600000)/60000);
+            let ss = Math.floor((diff%60000)/1000);
+            document.getElementById('p-timer').innerText = 
+                (hh < 10 ? '০' : '') + hh.toLocaleString('bn-BD') + ":" + 
+                (mm < 10 ? '০' : '') + mm.toLocaleString('bn-BD') + ":" + 
+                (ss < 10 ? '০' : '') + ss.toLocaleString('bn-BD');
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function playSalam() {
+            // সালাম অডিও ফাংশন (যদি প্রয়োজন হয়)
+        }
+    </script>
+</body>
+</html>
